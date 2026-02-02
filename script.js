@@ -9,11 +9,16 @@ const catImg = document.getElementById("letter-cat");
 const buttons = document.getElementById("letter-buttons");
 const finalText = document.getElementById("final-text");
 
+let noBtnBaseRect = null;
+
 // Click Envelope
 
 envelope.addEventListener("click", () => {
     envelope.style.display = "none";
     letter.style.display = "flex";
+
+    noBtn.style.transform = "translate(0px, 0px)";
+    noBtnBaseRect = null;
 
     setTimeout( () => {
         document.querySelector(".letter-window").classList.add("open");
@@ -22,18 +27,57 @@ envelope.addEventListener("click", () => {
 
 // Logic to move the NO btn
 
-noBtn.addEventListener("mouseover", () => {
-    const min = 200;
-    const max = 200;
+function getNoBtnBaseRect() {
+    const prevTransform = noBtn.style.transform;
+    noBtn.style.transform = "translate(0px, 0px)";
+    const rect = noBtn.getBoundingClientRect();
+    noBtn.style.transform = prevTransform;
+    return rect;
+}
 
-    const distance = Math.random() * (max - min) + min;
-    const angle = Math.random() * Math.PI * 2;
+function moveNoButton() {
+    const boundsEl = document.querySelector(".letter-window");
+    if (!boundsEl) return;
 
-    const moveX = Math.cos(angle) * distance;
-    const moveY = Math.sin(angle) * distance;
+    const boundsRect = boundsEl.getBoundingClientRect();
 
-    noBtn.style.transition = "transform 0.3s ease";
+    if (!noBtnBaseRect) {
+        noBtnBaseRect = getNoBtnBaseRect();
+    }
+
+    const padding = 16;
+
+    const minX = boundsRect.left + padding;
+    const maxX = boundsRect.right - padding - noBtnBaseRect.width;
+    const minY = boundsRect.top + padding;
+    const maxY = boundsRect.bottom - padding - noBtnBaseRect.height;
+
+    const targetLeft = maxX <= minX ? minX : Math.random() * (maxX - minX) + minX;
+    const targetTop = maxY <= minY ? minY : Math.random() * (maxY - minY) + minY;
+
+    const moveX = targetLeft - noBtnBaseRect.left;
+    const moveY = targetTop - noBtnBaseRect.top;
+
+    noBtn.style.transition = "transform 0.2s ease";
     noBtn.style.transform = `translate(${moveX}px, ${moveY}px)`;
+}
+
+noBtn.addEventListener("pointerenter", () => {
+    moveNoButton();
+});
+
+noBtn.addEventListener(
+    "pointerdown",
+    (e) => {
+        e.preventDefault();
+        moveNoButton();
+    },
+    { passive: false }
+);
+
+window.addEventListener("resize", () => {
+    noBtn.style.transform = "translate(0px, 0px)";
+    noBtnBaseRect = null;
 });
 
 // Logic to make YES btn to grow
