@@ -139,29 +139,34 @@ display: inline-block;
 }
 
 @media (max-width: 480px) {
+    body {
+        height: 100dvh;
+    }
+
     h1 {
-        font-size: 22px;
+        font-size: clamp(18px, 5vw, 22px);
     }
 
     p {
-        font-size: 28px;
+        font-size: clamp(22px, 7vw, 28px);
     }
 
     .letter-window {
         aspect-ratio: auto;
-        height: 82vh;
-        padding-top: 130px;
-        padding-bottom: 40px;
+        height: min(82vh, 640px);
+        padding-top: 120px;
+        padding-bottom: 48px;
         justify-content: flex-start;
     }
 
     .cat {
-        width: 180px;
+        width: clamp(150px, 42vw, 190px);
     }
 
     .buttons {
         gap: 16px;
         flex-wrap: wrap;
+        align-items: center;
     }
 
     .btn,

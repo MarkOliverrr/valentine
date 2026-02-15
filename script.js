@@ -36,7 +36,9 @@ function getNoBtnBaseRect() {
 }
 
 function moveNoButton() {
-    const boundsEl = document.querySelector(".letter-window");
+    const boundsEl = window.matchMedia("(max-width: 480px)").matches
+        ? document.querySelector(".buttons")
+        : document.querySelector(".letter-window");
     if (!boundsEl) return;
 
     const boundsRect = boundsEl.getBoundingClientRect();
